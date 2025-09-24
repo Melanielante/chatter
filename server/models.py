@@ -63,3 +63,37 @@ class Group(db.Model, SerializerMixin):
 
     def __repr__(self):
         return f"<Group {self.name}>"
+
+class Like(db.Model, SerializerMixin):
+    __tablename__ = "likes"
+
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False)
+    post_id = db.Column(db.Integer, db.ForeignKey("posts.id"), nullable=False)
+
+    user = db.relationship("User", backref="likes")
+    post = db.relationship("Post", backref="likes")
+
+    __table_args__ = (db.UniqueConstraint("user_id", "post_id", name="_user_post_uc"),)
+
+    serialize_rules = ("-user.likes", "-post.likes")
+
+    def __repr__(self):
+        return f"<Like User {self.user_id} Post {self.post_id}>"
+
+class Comment(db.Model, SerializerMixin):
+    __tablename__ = "comments"
+
+    id = db.Column(db.Integer, primary_key=True)
+    content = db.Column(db.String, nullable=False)
+
+    user_id = db.Column(db.Integer, db.ForeignKey("users.id"))
+    post_id = db.Column(db.Integer, db.ForeignKey("posts.id"))
+
+    user = db.relationship("User", backref="comments")
+    post = db.relationship("Post", backref="comments")
+
+    serialize_rules = ("-user.comments", "-post.comments")
+
+    def __repr__(self):
+        return f"<Comment {self.id} by User {self.user_id}>"
