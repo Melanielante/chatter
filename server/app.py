@@ -7,6 +7,8 @@ from flask_restful import Api
 from models import db
 from routes.users import UserResource
 from routes.posts import PostResource
+from routes.comments import CommentResource
+
 
 
 app = Flask(__name__)
@@ -21,7 +23,7 @@ CORS(app)
 # import routes 
 api.add_resource(UserResource, "/users", "/users/<int:user_id>")
 api.add_resource(PostResource, "/posts", "/posts/<int:post_id>")
-
+api.add_resource(CommentResource, "/comments", "/comments/<int:comment_id>")
 
 
 if __name__ == "__main__":
