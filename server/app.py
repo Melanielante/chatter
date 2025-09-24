@@ -8,6 +8,7 @@ from routes.users import UserResource
 from routes.posts import PostResource
 from routes.comments import CommentResource
 from routes.likes import LikeResource
+from routes.groups import GroupResource
 
 
 
@@ -25,6 +26,7 @@ api.add_resource(UserResource, "/users", "/users/<int:user_id>")
 api.add_resource(PostResource, "/posts", "/posts/<int:post_id>")
 api.add_resource(CommentResource, "/comments", "/comments/<int:comment_id>")
 api.add_resource(LikeResource, "/likes", "/likes/<int:like_id>")
+api.add_resource(GroupResource, "/groups", "/groups/<int:group_id>")
 
 
 if __name__ == "__main__":
