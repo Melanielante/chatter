@@ -3,13 +3,14 @@ from datetime import datetime
 
 db = SQLAlchemy()
 
-# ----------------- USER -----------------
+#  USER
 class User(db.Model):
     __tablename__ = "users"
 
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(50), unique=True, nullable=False)
     email = db.Column(db.String(100), unique=True, nullable=False)
+    password = db.Column(db.String(255), nullable=False)  
 
     posts = db.relationship("Post", backref="author", lazy=True)
     comments = db.relationship("Comment", backref="author", lazy=True)
@@ -34,7 +35,7 @@ class User(db.Model):
         }
 
 
-# ----------------- POST -----------------
+#  POST
 class Post(db.Model):
     __tablename__ = "posts"
 
@@ -54,7 +55,7 @@ class Post(db.Model):
         }
 
 
-# ----------------- COMMENT -----------------
+#  COMMENT 
 class Comment(db.Model):
     __tablename__ = "comments"
 
@@ -75,7 +76,7 @@ class Comment(db.Model):
         }
 
 
-# ----------------- FOLLOW -----------------
+#  FOLLOW
 class Follow(db.Model):
     __tablename__ = "follows"
 
