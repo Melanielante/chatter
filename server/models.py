@@ -1,5 +1,4 @@
 
-
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy_serializer import SerializerMixin
 
@@ -12,6 +11,7 @@ user_group = db.Table(
     db.Column('group_id', db.Integer, db.ForeignKey('groups.id'), primary_key=True)
 )
 
+# users table
 class User(db.Model, SerializerMixin):
     __tablename__ = "users"
 
@@ -29,7 +29,7 @@ class User(db.Model, SerializerMixin):
     def __repr__(self):
         return f"<User {self.username}>"
 
-
+# posts table
 class Post(db.Model, SerializerMixin):
     __tablename__ = "posts"
 
@@ -47,7 +47,7 @@ class Post(db.Model, SerializerMixin):
     def __repr__(self):
         return f"<Post {self.id}: {self.content[:20]}>"
 
-
+# groups table
 class Group(db.Model, SerializerMixin):
     __tablename__ = "groups"
 
@@ -64,6 +64,7 @@ class Group(db.Model, SerializerMixin):
     def __repr__(self):
         return f"<Group {self.name}>"
 
+# likes table
 class Like(db.Model, SerializerMixin):
     __tablename__ = "likes"
 
@@ -81,6 +82,7 @@ class Like(db.Model, SerializerMixin):
     def __repr__(self):
         return f"<Like User {self.user_id} Post {self.post_id}>"
 
+# comments table
 class Comment(db.Model, SerializerMixin):
     __tablename__ = "comments"
 
