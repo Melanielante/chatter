@@ -9,20 +9,29 @@ class PostResource(Resource):
             post = Post.query.get(post_id)
             if not post:
                 return {"error": "Post not found"}, 404
-            return post.to_dict()
+
+            # include relationships
+            post_data = post.to_dict()
+            post_data["user"] = post.user.to_dict(only=("id", "username"))
+            post_data["group"] = post.group.to_dict(only=("id", "name")) if post.group else None
+            post_data["comments"] = [c.to_dict() for c in post.comments]
+            post_data["likes"] = [l.user.to_dict(only=("id", "username")) for l in post.likes]
+
+            return post_data
+
         else:
             posts = Post.query.all()
-            return [p.to_dict() for p in posts]
+            return [p.to_dict(only=("id", "content", "user_id", "group_id")) for p in posts]
 
     def post(self):
         data = request.get_json()
 
-        # check if user exists
+        # validate user
         user = User.query.get(data.get("user_id"))
         if not user:
             return {"error": "Invalid user_id"}, 400
 
-        # check if group exists 
+        # validate group 
         group = None
         if data.get("group_id"):
             group = Group.query.get(data.get("group_id"))

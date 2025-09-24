@@ -6,9 +6,7 @@ from flask import Flask
 from flask_restful import Api
 from models import db
 from routes.users import UserResource
-
-# db = SQLAlchemy()
-# migrate = Migrate()
+from routes.posts import PostResource
 
 
 app = Flask(__name__)
@@ -20,8 +18,9 @@ db.init_app(app)
 migrate = Migrate(app, db)
 CORS(app)
 
-# import routes here later
+# import routes 
 api.add_resource(UserResource, "/users", "/users/<int:user_id>")
+api.add_resource(PostResource, "/posts", "/posts/<int:post_id>")
 
 
 
