@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams } from "react-router";
 
 function PostDetail() {
   const { id } = useParams(); // grab post id from URL
