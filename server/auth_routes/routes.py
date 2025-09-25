@@ -1,6 +1,6 @@
 from flask import Blueprint, request, jsonify
 from models import db, User
-from flask_jwt_extended import create_access_token
+from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity
 from flask_bcrypt import Bcrypt
 from werkzeug.exceptions import BadRequest, Unauthorized
 
@@ -62,3 +62,20 @@ def login():
             "email": user.email
         }
     }), 200
+
+# Protected route to test JWT
+@auth_bp.route("/protected", methods=["GET"])
+@jwt_required()
+def protected():
+    current_user_id = get_jwt_identity()
+    user = User.query.get(current_user_id)
+    if not user:
+        return {"error": "User not found"}, 404
+    return {
+        "message": "JWT authentication successful",
+        "user": {
+            "id": user.id,
+            "username": user.username,
+            "email": user.email
+        }
+    }, 200
