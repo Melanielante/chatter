@@ -19,6 +19,9 @@ db.init_app(app)
 migrate = Migrate(app, db)
 CORS(app)
 
+with app.app_context():
+    db.create_all()
+
 # import routes here later
 
 
@@ -26,6 +29,8 @@ CORS(app)
 def health_check():
     return {"status": "ok"}, 200
 
+
+# Register blueprints
 app.register_blueprint(auth_bp)
 
 if __name__ == "__main__":
