@@ -1,6 +1,7 @@
 
 from flask import request
 from flask_restful import Resource
+from flask_jwt_extended import jwt_required, get_jwt_identity
 from models import db, Comment, User, Post
 
 class CommentResource(Resource):
@@ -26,42 +27,26 @@ class CommentResource(Resource):
 
             return comments_data, 200
 
+    @jwt_required()
     def post(self):
         data = request.get_json()
-
-        user = User.query.get(data.get("user_id"))
-        if not user:
-            return {"error": "Invalid user_id"}, 400
+        current_user_id = get_jwt_identity()
 
         post = Post.query.get(data.get("post_id"))
         if not post:
             return {"error": "Invalid post_id"}, 400
 
-        try:
-            new_comment = Comment(
-                content=data.get("content"),
-                user_id=data.get("user_id"),
-                post_id=data.get("post_id")
-            )
-            db.session.add(new_comment)
-            db.session.commit()
-        except Exception as e:
-            db.session.rollback()
-            return {"error": str(e)}, 500
+        new_comment = Comment(
+            content=data.get("content"),
+            user_id=current_user_id,
+            post_id=data.get("post_id")
+        )
+        db.session.add(new_comment)
+        db.session.commit()
 
         return new_comment.to_dict(), 201
 
-    def patch(self, comment_id):
-        comment = Comment.query.get(comment_id)
-        if not comment:
-            return {"error": "Comment not found"}, 404
-
-        data = request.get_json()
-        comment.content = data.get("content", comment.content)
-
-        db.session.commit()
-        return comment.to_dict(), 200
-
+    @jwt_required()
     def delete(self, comment_id):
         comment = Comment.query.get(comment_id)
         if not comment:

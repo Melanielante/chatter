@@ -1,8 +1,10 @@
 from flask import request
 from flask_restful import Resource
+from flask_jwt_extended import jwt_required, get_jwt_identity
 from models import db, Post, User, Group
 
 class PostResource(Resource):
+    @jwt_required()
     def get(self, post_id=None):
         if post_id:
             post = Post.query.get(post_id)
@@ -29,33 +31,29 @@ class PostResource(Resource):
 
         return posts_data, 200
 
+    @jwt_required()
     def post(self):
         data = request.get_json()
+        current_user_id = get_jwt_identity()
 
-        user = User.query.get(data.get("user_id"))
-        if not user:
-            return {"error": "Invalid user_id"}, 400
-
+        # validate group
         group = None
         if data.get("group_id"):
             group = Group.query.get(data.get("group_id"))
             if not group:
                 return {"error": "Invalid group_id"}, 400
 
-        try:
-            new_post = Post(
-                content=data.get("content"),
-                user_id=data.get("user_id"),
-                group_id=data.get("group_id")
-            )
-            db.session.add(new_post)
-            db.session.commit()
-        except Exception as e:
-            db.session.rollback()
-            return {"error": str(e)}, 500
+        new_post = Post(
+            content=data.get("content"),
+            user_id=current_user_id,
+            group_id=data.get("group_id")
+        )
+        db.session.add(new_post)
+        db.session.commit()
 
         return new_post.to_dict(), 201
 
+    @jwt_required()
     def patch(self, post_id):
         post = Post.query.get(post_id)
         if not post:
@@ -67,6 +65,7 @@ class PostResource(Resource):
         db.session.commit()
         return post.to_dict(), 200
 
+    @jwt_required()
     def delete(self, post_id):
         post = Post.query.get(post_id)
         if not post:
