@@ -1,6 +1,7 @@
 # routes/comments.py
 from flask import request
 from flask_restful import Resource
+from flask_jwt_extended import jwt_required, get_jwt_identity
 from models import db, Comment, User, Post
 
 class CommentResource(Resource):
@@ -27,13 +28,10 @@ class CommentResource(Resource):
                 for c in comments
             ]
 
+    @jwt_required()
     def post(self):
         data = request.get_json()
-
-        # validate user and post
-        user = User.query.get(data.get("user_id"))
-        if not user:
-            return {"error": "Invalid user_id"}, 400
+        current_user_id = get_jwt_identity()
 
         post = Post.query.get(data.get("post_id"))
         if not post:
@@ -41,7 +39,7 @@ class CommentResource(Resource):
 
         new_comment = Comment(
             content=data.get("content"),
-            user_id=data.get("user_id"),
+            user_id=current_user_id,
             post_id=data.get("post_id")
         )
         db.session.add(new_comment)
@@ -49,6 +47,7 @@ class CommentResource(Resource):
 
         return new_comment.to_dict(), 201
 
+    @jwt_required()
     def delete(self, comment_id):
         comment = Comment.query.get(comment_id)
         if not comment:

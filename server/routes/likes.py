@@ -1,6 +1,7 @@
 
 from flask import request
 from flask_restful import Resource
+from flask_jwt_extended import jwt_required, get_jwt_identity
 from models import db, Like, User, Post
 
 class LikeResource(Resource):
@@ -25,21 +26,22 @@ class LikeResource(Resource):
                 for l in likes
             ]
 
+    @jwt_required()
     def post(self):
         data = request.get_json()
+        current_user_id = get_jwt_identity()
 
-        user = User.query.get(data.get("user_id"))
         post = Post.query.get(data.get("post_id"))
 
-        if not user or not post:
-            return {"error": "Invalid user_id or post_id"}, 400
+        if not post:
+            return {"error": "Invalid post_id"}, 400
 
         # check if like already exists
-        existing_like = Like.query.filter_by(user_id=user.id, post_id=post.id).first()
+        existing_like = Like.query.filter_by(user_id=current_user_id, post_id=post.id).first()
         if existing_like:
             return {"error": "User already liked this post"}, 400
 
-        new_like = Like(user_id=user.id, post_id=post.id)
+        new_like = Like(user_id=current_user_id, post_id=post.id)
         db.session.add(new_like)
         db.session.commit()
 
@@ -48,6 +50,7 @@ class LikeResource(Resource):
             "like": new_like.to_dict()
         }, 201
 
+    @jwt_required()
     def delete(self, like_id):
         like = Like.query.get(like_id)
         if not like:
