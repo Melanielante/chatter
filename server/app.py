@@ -3,7 +3,7 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from flask_cors import CORS
 from models import db
-from routes.auth_routes import auth_bp
+from auth_routes import auth_bp
 
 # db = SQLAlchemy()
 # migrate = Migrate()
