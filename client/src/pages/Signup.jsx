@@ -1,63 +1,67 @@
-import React from "react";
-import { Formik, Form, Field, ErrorMessage } from "formik";
-import * as Yup from "yup";
 
-// Validation schema with Yup
-const SignupSchema = Yup.object().shape({
-  username: Yup.string().required("Username is required"),
-  email: Yup.string().email("Invalid email format").required("Email is required"),
-  password: Yup.string().min(6, "Password must be at least 6 characters").required("Password is required"),
-});
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router';
 
-function Signup() {
+function Signup({ setUser }) {
+  const [username, setUsername] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
+  const navigate = useNavigate();
+
+  const handleSignup = async (e) => {
+    e.preventDefault();
+    setError('');
+
+    try {
+      const response = await fetch('http://127.0.0.1:5000/auth/signup', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username, email, password }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        setError(data.error || 'Signup failed');
+        return;
+      }
+
+      setUser(data); // save logged-in user in App state
+      navigate('/feed'); // go to feed after signup
+    } catch  {
+      setError('Something went wrong. Please try again.');
+    }
+  };
+
   return (
-    <div className="signup-page">
+    <div className="signup-container">
       <h2>Signup</h2>
-
-      <Formik
-        initialValues={{ username: "", email: "", password: "" }}
-        validationSchema={SignupSchema}
-        onSubmit={(values, { resetForm }) => {
-          console.log("Form Submitted:", values);
-
-        //   TODO: Replace with Flask backend for post
-          fetch("http://127.0.0.1:5000/users", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(values),
-          })
-            .then((res) => res.json())
-            .then((data) => console.log("User created:", data));
-
-          resetForm();
-        }}
-      >
-        {({ isSubmitting }) => (
-          <Form className="signup-form">
-            <div>
-              <label htmlFor="username">Username</label>
-              <Field name="username" type="text" />
-              <ErrorMessage name="username" component="div" className="error" />
-            </div>
-
-            <div>
-              <label htmlFor="email">Email</label>
-              <Field name="email" type="email" />
-              <ErrorMessage name="email" component="div" className="error" />
-            </div>
-
-            <div>
-              <label htmlFor="password">Password</label>
-              <Field name="password" type="password" />
-              <ErrorMessage name="password" component="div" className="error" />
-            </div>
-
-            <button type="submit" disabled={isSubmitting}>
-              {isSubmitting ? "Submitting..." : "Signup"}
-            </button>
-          </Form>
-        )}
-      </Formik>
+      {error && <p style={{ color: 'red' }}>{error}</p>}
+      <form onSubmit={handleSignup}>
+        <input
+          type="text"
+          placeholder="Username"
+          value={username}
+          onChange={(e) => setUsername(e.target.value)}
+          required
+        />
+        <input
+          type="email"
+          placeholder="Email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          required
+        />
+        <input
+          type="password"
+          placeholder="Password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          required
+        />
+        <button type="submit">Signup</button>
+      </form>
     </div>
   );
 }
