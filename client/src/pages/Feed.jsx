@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { fetchPosts } from "../utils/api";
+import { fetchPosts } from "../utils/Api"
 
 function Feed() {
   const [posts, setPosts] = useState([]);
