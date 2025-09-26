@@ -1,6 +1,4 @@
-
 from flask_sqlalchemy import SQLAlchemy
-# from datetime import datetime
 from sqlalchemy_serializer import SerializerMixin
 
 db = SQLAlchemy()
@@ -12,7 +10,7 @@ user_group = db.Table(
     db.Column('group_id', db.Integer, db.ForeignKey('groups.id'), primary_key=True)
 )
 
-# users table
+# ---------------- USER ----------------
 class User(db.Model, SerializerMixin):
     __tablename__ = "users"
 
@@ -24,13 +22,20 @@ class User(db.Model, SerializerMixin):
     posts = db.relationship("Post", backref="user", lazy=True)
     groups = db.relationship("Group", secondary=user_group, back_populates="users")
 
-    # Control how serialization works
     serialize_rules = ("-posts.user", "-groups.users")
 
     def __repr__(self):
         return f"<User {self.username}>"
 
-# posts table
+    def to_safe_dict(self):
+        return {
+            "id": self.id,
+            "username": self.username,
+            "email": self.email,
+            "groups": [{"id": g.id, "name": g.name} for g in self.groups],
+        }
+
+# ---------------- POST ----------------
 class Post(db.Model, SerializerMixin):
     __tablename__ = "posts"
 
@@ -42,13 +47,20 @@ class Post(db.Model, SerializerMixin):
 
     group = db.relationship("Group", back_populates="posts")
 
-    # Avoid recursion
     serialize_rules = ("-user.posts", "-group.posts")
 
     def __repr__(self):
         return f"<Post {self.id}: {self.content[:20]}>"
 
-# groups table
+    def to_safe_dict(self):
+        return {
+            "id": self.id,
+            "content": self.content,
+            "user": {"id": self.user.id, "username": self.user.username} if self.user else None,
+            "group": {"id": self.group.id, "name": self.group.name} if self.group else None,
+        }
+
+# ---------------- GROUP ----------------
 class Group(db.Model, SerializerMixin):
     __tablename__ = "groups"
 
@@ -59,13 +71,21 @@ class Group(db.Model, SerializerMixin):
     users = db.relationship("User", secondary=user_group, back_populates="groups")
     posts = db.relationship("Post", back_populates="group")
 
-    # Avoid recursion
     serialize_rules = ("-users.groups", "-posts.group")
 
     def __repr__(self):
         return f"<Group {self.name}>"
 
-# likes table
+    def to_safe_dict(self):
+        return {
+            "id": self.id,
+            "name": self.name,
+            "description": self.description,
+            "users": [{"id": u.id, "username": u.username} for u in self.users],
+            "posts": [{"id": p.id, "content": p.content} for p in self.posts],
+        }
+
+# ---------------- LIKE ----------------
 class Like(db.Model, SerializerMixin):
     __tablename__ = "likes"
 
@@ -83,7 +103,14 @@ class Like(db.Model, SerializerMixin):
     def __repr__(self):
         return f"<Like User {self.user_id} Post {self.post_id}>"
 
-# comments table
+    def to_safe_dict(self):
+        return {
+            "id": self.id,
+            "user": {"id": self.user.id, "username": self.user.username} if self.user else None,
+            "post": {"id": self.post.id, "content": self.post.content} if self.post else None,
+        }
+
+# ---------------- COMMENT ----------------
 class Comment(db.Model, SerializerMixin):
     __tablename__ = "comments"
 
@@ -101,3 +128,10 @@ class Comment(db.Model, SerializerMixin):
     def __repr__(self):
         return f"<Comment {self.id} by User {self.user_id}>"
 
+    def to_safe_dict(self):
+        return {
+            "id": self.id,
+            "content": self.content,
+            "user": {"id": self.user.id, "username": self.user.username} if self.user else None,
+            "post_id": self.post_id,
+        }
