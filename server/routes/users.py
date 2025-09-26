@@ -1,7 +1,7 @@
-# routes/users.py
+
 from flask import request
 from flask_restful import Resource
-from models import db, User
+from models import db, User, Post, Group
 
 class UserResource(Resource):
     def get(self, user_id=None):
@@ -9,7 +9,13 @@ class UserResource(Resource):
             user = User.query.get(user_id)
             if not user:
                 return {"error": "User not found"}, 404
-            return user.to_dict()
+
+            # Include posts + groups
+            user_data = user.to_dict()
+            user_data["posts"] = [p.to_dict() for p in user.posts]
+            user_data["groups"] = [g.to_dict() for g in user.groups]
+
+            return user_data
         else:
             users = User.query.all()
             return [u.to_dict() for u in users]
