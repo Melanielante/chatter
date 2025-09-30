@@ -1,3 +1,4 @@
+import os
 from flask import Flask
 from flask_migrate import Migrate
 from flask_cors import CORS
@@ -11,11 +12,18 @@ from routes.likes import LikeResource
 from routes.groups import GroupResource
 from flask_jwt_extended import JWTManager, jwt_required, get_jwt_identity
 
-
 app = Flask(__name__)
-app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///chatter.db"
+
+# Use DATABASE_URL from Render, fallback to local SQLite
+DATABASE_URL = os.environ.get("DATABASE_URL", "sqlite:///chatter.db")
+
+# Fix Render’s postgres:// → postgresql://
+if DATABASE_URL.startswith("postgres://"):
+    DATABASE_URL = DATABASE_URL.replace("postgres://", "postgresql://", 1)
+
+app.config["SQLALCHEMY_DATABASE_URI"] = DATABASE_URL
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
-app.config["JWT_SECRET_KEY"] = "super-secret-key"  
+app.config["JWT_SECRET_KEY"] = os.environ.get("JWT_SECRET_KEY", "super-secret-key")
 
 api = Api(app)
 db.init_app(app)
@@ -27,7 +35,7 @@ CORS(app)
 with app.app_context():
     db.create_all()
 
-@app.route ("/health")
+@app.route("/health")
 def health_check():
     return {"status": "ok"}, 200
 
@@ -47,16 +55,15 @@ def test_jwt():
         }
     }, 200
 
-# import routes
+# API routes
 api.add_resource(UserResource, "/users", "/users/<int:user_id>")
 api.add_resource(PostResource, "/posts", "/posts/<int:post_id>")
 api.add_resource(CommentResource, "/comments", "/comments/<int:comment_id>")
 api.add_resource(LikeResource, "/likes", "/likes/<int:like_id>")
 api.add_resource(GroupResource, "/groups", "/groups/<int:group_id>")
 
-
 # Register blueprints
 app.register_blueprint(auth_bp)
 
 if __name__ == "__main__":
-    app.run( debug=True)
+    app.run(debug=True)
