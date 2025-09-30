@@ -1,5 +1,6 @@
 from flask import request
 from flask_restful import Resource
+from flask_jwt_extended import jwt_required
 from models import db, Group, User
 
 class GroupResource(Resource):
@@ -17,6 +18,7 @@ class GroupResource(Resource):
             groups = Group.query.all()
             return [g.to_dict(only=("id", "name", "description")) for g in groups], 200
 
+    @jwt_required()
     def post(self):
         data = request.get_json()
         try:
@@ -32,6 +34,7 @@ class GroupResource(Resource):
 
         return new_group.to_dict(), 201
 
+    @jwt_required()
     def patch(self, group_id):
         group = Group.query.get(group_id)
         if not group:
@@ -44,6 +47,7 @@ class GroupResource(Resource):
         db.session.commit()
         return group.to_dict(), 200
 
+    @jwt_required()
     def delete(self, group_id):
         group = Group.query.get(group_id)
         if not group:
