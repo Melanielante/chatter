@@ -34,7 +34,10 @@ function Login({ setUser }) {
         throw new Error(data.error || "Login failed");
       }
 
-      // Save just the user object
+      // ----- NEW: store JWT token -----
+      localStorage.setItem("token", data.token);
+
+      // Save the user object in state
       setUser(data.user);
 
       // Redirect to feed

@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router";
 
-
 function Signup({ setUser }) {
   const [formData, setFormData] = useState({
     username: "",
@@ -36,8 +35,11 @@ function Signup({ setUser }) {
         throw new Error(data.error || "Signup failed");
       }
 
+      // ----- NEW: store JWT token -----
+      localStorage.setItem("token", data.token);
+
       // Save new user in global state
-      setUser(data);
+      setUser(data.user);
 
       // Redirect to feed
       navigate("/feed");
