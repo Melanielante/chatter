@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from "react";
-import { fetchPosts, createPost, addComment } from "../utils/Api";
+import { fetchPosts, createPost, addComment, updatePost, deletePost } from "../utils/Api";
 import PostList from "../components/PostList";
 import PostForm from "../components/PostForm";
-
 
 function Feed() {
   const [posts, setPosts] = useState([]);
@@ -44,7 +43,6 @@ function Feed() {
         commentData.content
       );
 
-      // update state locally so UI reflects instantly
       setPosts((prevPosts) =>
         prevPosts.map((post) =>
           post.id === postId
@@ -57,13 +55,40 @@ function Feed() {
     }
   };
 
+  // Update a post
+  const handleUpdatePost = async (postId, updatedData) => {
+    try {
+      const updatedPost = await updatePost(postId, updatedData);
+      setPosts((prevPosts) =>
+        prevPosts.map((post) => (post.id === postId ? updatedPost : post))
+      );
+    } catch (err) {
+      console.error("Error updating post:", err);
+    }
+  };
+
+  // Delete a post
+  const handleDeletePost = async (postId) => {
+    try {
+      await deletePost(postId);
+      setPosts((prevPosts) => prevPosts.filter((post) => post.id !== postId));
+    } catch (err) {
+      console.error("Error deleting post:", err);
+    }
+  };
+
   if (loading) return <p>Loading posts...</p>;
 
   return (
     <div className="feed">
       <h2>Feed</h2>
       <PostForm onAddPost={handleAddPost} />
-      <PostList posts={posts} onAddComment={handleAddComment} />
+      <PostList
+        posts={posts}
+        onAddComment={handleAddComment}
+        onUpdatePost={handleUpdatePost}
+        onDeletePost={handleDeletePost}
+      />
     </div>
   );
 }

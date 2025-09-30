@@ -188,3 +188,102 @@ body {
 .footer a:hover {
   color: #60a5fa; /* lighter blue */
 }
+
+.post-card {
+  background: #f0f8ff;
+  border: 2px solid #1e3a8a;
+  border-radius: 10px;
+  padding: 1rem;
+  margin: 1rem 0;
+  box-shadow: 0 4px 10px rgba(30, 58, 138, 0.3);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.post-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 14px rgba(30, 58, 138, 0.5);
+}
+
+.post-user {
+  color: #1e3a8a;
+  margin-bottom: 0.5rem;
+}
+
+.post-content {
+  font-size: 1.1rem;
+  margin: 0.5rem 0;
+  color: #111827;
+}
+
+.post-group {
+  font-size: 0.85rem;
+  color: #3b82f6;
+}
+
+.post-likes {
+  margin: 0.5rem 0;
+  font-weight: bold;
+  color: #2563eb;
+}
+
+.post-actions {
+  margin: 0.8rem 0;
+  display: flex;
+  gap: 0.5rem;
+}
+
+.post-edit-textarea {
+  width: 100%;
+  padding: 0.5rem;
+  border: 1px solid #3b82f6;
+  border-radius: 6px;
+  margin-bottom: 0.5rem;
+  resize: vertical;
+}
+
+/* Buttons */
+.btn {
+  padding: 0.4rem 0.8rem;
+  border-radius: 6px;
+  border: none;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+/* Specific colors */
+.btn-edit {
+  background: #3b82f6;
+  color: white;
+}
+
+.btn-edit:hover {
+  background: #1e40af;
+}
+
+.btn-save {
+  background: #22c55e;
+  color: white;
+}
+
+.btn-save:hover {
+  background: #15803d;
+}
+
+.btn-delete {
+  background: #ef4444;
+  color: white;
+}
+
+.btn-delete:hover {
+  background: #b91c1c;
+}
+
+.btn-toggle {
+  background: #1e3a8a;
+  color: white;
+}
+
+.btn-toggle:hover {
+  background: #172554;
+}
