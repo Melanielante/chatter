@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from "react";
-import { fetchPosts } from "../utils/Api"
+import { fetchPosts, createPost } from "../utils/Api";
+import PostForm from "../components/PostForm";
+import PostList from "../components/PostList";
 
-function Feed() {
+function Feed({ user }) {
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  // fetch posts when component mounts
+  // fetch posts when component loads
   useEffect(() => {
     fetchPosts()
       .then((data) => {
@@ -18,44 +20,27 @@ function Feed() {
       });
   }, []);
 
-  if (loading) {
-    return <p>Loading feed...</p>;
-  }
+  const handleAddPost = async (content) => {
+    try {
+      const newPost = await createPost({ content, user_id: user.id });
+      setPosts([newPost, ...posts]); // add new post at top
+    } catch (err) {
+      console.error("Error creating post:", err);
+    }
+  };
+
+  if (loading) return <p>Loading feed...</p>;
 
   return (
     <div>
       <h2>Chatter Feed</h2>
+
+      {user && <PostForm onSubmit={handleAddPost} />}
+
       {posts.length === 0 ? (
         <p>No posts yet. Be the first to share something!</p>
       ) : (
-        posts.map((post) => (
-          <div
-            key={post.id}
-            style={{
-              border: "1px solid #ccc",
-              padding: "10px",
-              margin: "10px 0",
-              borderRadius: "5px",
-            }}
-          >
-            <p><strong>User {post.user_id}:</strong> {post.content}</p>
-
-            {post.comments && post.comments.length > 0 && (
-              <div style={{ marginTop: "8px", paddingLeft: "10px" }}>
-                <strong>Comments:</strong>
-                {post.comments.map((comment) => (
-                  <p key={comment.id} style={{ margin: "4px 0" }}>
-                    <em>User {comment.user_id}:</em> {comment.content}
-                  </p>
-                ))}
-              </div>
-            )}
-
-            <p style={{ marginTop: "8px" }}>
-              👍 {post.likes ? post.likes.length : 0} Likes
-            </p>
-          </div>
-        ))
+        <PostList posts={posts} />
       )}
     </div>
   );

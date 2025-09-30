@@ -1,10 +1,9 @@
-
 import React, { useState } from "react";
 import { useNavigate } from "react-router";
 
 function Login({ setUser }) {
   const [formData, setFormData] = useState({
-    username: "",
+    email: "",
     password: "",
   });
   const [error, setError] = useState("");
@@ -30,15 +29,13 @@ function Login({ setUser }) {
         body: JSON.stringify(formData),
       });
 
+      const data = await response.json();
       if (!response.ok) {
-        const errData = await response.json();
-        throw new Error(errData.error || "Login failed");
+        throw new Error(data.error || "Login failed");
       }
 
-      const userData = await response.json();
-
-      // Save user in global state
-      setUser(userData);
+      // Save just the user object
+      setUser(data.user);
 
       // Redirect to feed
       navigate("/feed");
@@ -52,10 +49,10 @@ function Login({ setUser }) {
       <h2>Login</h2>
       <form onSubmit={handleSubmit}>
         <input
-          type="text"
-          name="username"
-          placeholder="Username"
-          value={formData.username}
+          type="email"
+          name="email"
+          placeholder="Email"
+          value={formData.email}
           onChange={handleChange}
           required
         />
