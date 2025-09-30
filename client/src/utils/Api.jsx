@@ -1,6 +1,6 @@
 
 
-const BASE_URL = "http://127.0.0.1:5555"; 
+const BASE_URL = "http://127.0.0.1:5000"; 
 
 //  Posts 
 export async function fetchPosts() {
@@ -73,5 +73,12 @@ export async function fetchGroups() {
 export async function fetchGroupById(id) {
   const res = await fetch(`${BASE_URL}/groups/${id}`);
   if (!res.ok) throw new Error("Failed to fetch group");
+  return res.json();
+}
+
+// Users
+export async function fetchUserById(id) {
+  const res = await fetch(`${BASE_URL}/users/${id}`);
+  if (!res.ok) throw new Error("Failed to fetch user");
   return res.json();
 }

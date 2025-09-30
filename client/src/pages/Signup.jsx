@@ -1,67 +1,82 @@
+import React, { useState } from "react";
+import { useNavigate } from "react-router";
 
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router';
 
 function Signup({ setUser }) {
-  const [username, setUsername] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
+  const [formData, setFormData] = useState({
+    username: "",
+    email: "",
+    password: "",
+  });
+  const [error, setError] = useState("");
   const navigate = useNavigate();
 
-  const handleSignup = async (e) => {
+  function handleChange(e) {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value,
+    });
+  }
+
+  async function handleSubmit(e) {
     e.preventDefault();
-    setError('');
+    setError("");
 
     try {
-      const response = await fetch('http://127.0.0.1:5000/auth/signup', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ username, email, password }),
+      const response = await fetch("http://127.0.0.1:5000/auth/signup", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
       });
 
       const data = await response.json();
-
       if (!response.ok) {
-        setError(data.error || 'Signup failed');
-        return;
+        throw new Error(data.error || "Signup failed");
       }
 
-      setUser(data); // save logged-in user in App state
-      navigate('/feed'); // go to feed after signup
-    } catch  {
-      setError('Something went wrong. Please try again.');
+      // Save new user in global state
+      setUser(data);
+
+      // Redirect to feed
+      navigate("/feed");
+    } catch (err) {
+      setError(err.message);
     }
-  };
+  }
 
   return (
-    <div className="signup-container">
-      <h2>Signup</h2>
-      {error && <p style={{ color: 'red' }}>{error}</p>}
-      <form onSubmit={handleSignup}>
+    <div className="signup-page">
+      <h2>Sign Up</h2>
+      <form onSubmit={handleSubmit}>
         <input
           type="text"
+          name="username"
           placeholder="Username"
-          value={username}
-          onChange={(e) => setUsername(e.target.value)}
+          value={formData.username}
+          onChange={handleChange}
           required
         />
         <input
           type="email"
+          name="email"
           placeholder="Email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
+          value={formData.email}
+          onChange={handleChange}
           required
         />
         <input
           type="password"
+          name="password"
           placeholder="Password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
+          value={formData.password}
+          onChange={handleChange}
           required
         />
-        <button type="submit">Signup</button>
+        <button type="submit">Sign Up</button>
       </form>
+      {error && <p style={{ color: "red" }}>{error}</p>}
     </div>
   );
 }

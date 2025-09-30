@@ -1,14 +1,24 @@
 import { useEffect, useState } from "react";
+import { fetchPosts } from "../utils/Api";
+import PostList from "../components/PostList";
 
 function Explore() {
   const [posts, setPosts] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch("http://127.0.0.1:5000/posts") 
-      .then((res) => res.json())
-      .then((data) => setPosts(data))
-      .catch((err) => console.error("Error fetching posts:", err));
+    fetchPosts()
+      .then((data) => {
+        setPosts(data);
+        setLoading(false);
+      })
+      .catch((err) => {
+        console.error("Error fetching posts:", err);
+        setLoading(false);
+      });
   }, []);
+
+  if (loading) return <p>Loading explore...</p>;
 
   return (
     <div className="explore">
@@ -16,15 +26,7 @@ function Explore() {
       {posts.length === 0 ? (
         <p>No posts yet.</p>
       ) : (
-        posts.map((post) => (
-          <div key={post.id} className="post-card">
-            <p>{post.content}</p>
-            <small>
-              Posted by User {post.user_id}
-              {post.group_id ? ` in Group ${post.group_id}` : ""}
-            </small>
-          </div>
-        ))
+        <PostList posts={posts} />
       )}
     </div>
   );

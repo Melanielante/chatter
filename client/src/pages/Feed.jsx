@@ -1,62 +1,69 @@
 import React, { useEffect, useState } from "react";
-import { fetchPosts } from "../utils/Api"
+import { fetchPosts, createPost, addComment } from "../utils/Api";
+import PostList from "../components/PostList";
+import PostForm from "../components/PostForm";
+
 
 function Feed() {
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  // fetch posts when component mounts
+  // Load posts on mount
   useEffect(() => {
-    fetchPosts()
-      .then((data) => {
-        setPosts(data);
-        setLoading(false);
-      })
-      .catch((error) => {
-        console.error("Error fetching posts:", error);
-        setLoading(false);
-      });
+    loadPosts();
   }, []);
 
-  if (loading) {
-    return <p>Loading feed...</p>;
-  }
+  const loadPosts = async () => {
+    try {
+      setLoading(true);
+      const data = await fetchPosts();
+      setPosts(data);
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Add a new post
+  const handleAddPost = async (postData) => {
+    try {
+      const newPost = await createPost(postData);
+      setPosts([newPost, ...posts]); 
+    } catch (err) {
+      console.error("Error creating post:", err);
+    }
+  };
+
+  // Add a new comment
+  const handleAddComment = async (postId, commentData) => {
+    try {
+      const newComment = await addComment(
+        postId,
+        commentData.user_id,
+        commentData.content
+      );
+
+      // update state locally so UI reflects instantly
+      setPosts((prevPosts) =>
+        prevPosts.map((post) =>
+          post.id === postId
+            ? { ...post, comments: [...(post.comments || []), newComment] }
+            : post
+        )
+      );
+    } catch (err) {
+      console.error("Error adding comment:", err);
+    }
+  };
+
+  if (loading) return <p>Loading posts...</p>;
 
   return (
-    <div>
-      <h2>Chatter Feed</h2>
-      {posts.length === 0 ? (
-        <p>No posts yet. Be the first to share something!</p>
-      ) : (
-        posts.map((post) => (
-          <div
-            key={post.id}
-            style={{
-              border: "1px solid #ccc",
-              padding: "10px",
-              margin: "10px 0",
-              borderRadius: "5px",
-            }}
-          >
-            <p><strong>User {post.user_id}:</strong> {post.content}</p>
-
-            {post.comments && post.comments.length > 0 && (
-              <div style={{ marginTop: "8px", paddingLeft: "10px" }}>
-                <strong>Comments:</strong>
-                {post.comments.map((comment) => (
-                  <p key={comment.id} style={{ margin: "4px 0" }}>
-                    <em>User {comment.user_id}:</em> {comment.content}
-                  </p>
-                ))}
-              </div>
-            )}
-
-            <p style={{ marginTop: "8px" }}>
-              👍 {post.likes ? post.likes.length : 0} Likes
-            </p>
-          </div>
-        ))
-      )}
+    <div className="feed">
+      <h2>Feed</h2>
+      <PostForm onAddPost={handleAddPost} />
+      <PostList posts={posts} onAddComment={handleAddComment} />
     </div>
   );
 }
