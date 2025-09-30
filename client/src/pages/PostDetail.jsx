@@ -1,22 +1,64 @@
 import { useEffect, useState } from "react";
-import { useParams } from "react-router";
+import { useParams } from "react-router-dom";
+import { fetchPostById, addComment, addLike } from "../utils/Api";
+import CommentList from "../components/CommentList";
+import CommentForm from "../components/CommentForm";
 
 function PostDetail() {
-  const { id } = useParams(); // grab post id from URL
+  const { id } = useParams();
   const [post, setPost] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch(`http://127.0.0.1:5000/posts/${id}`)
-      .then((res) => res.json())
-      .then((data) => setPost(data))
-      .catch((err) => console.error("Error fetching post:", err));
+    fetchPostById(id)
+      .then((data) => {
+        setPost(data);
+        setLoading(false);
+      })
+      .catch((err) => {
+        console.error("Error fetching post:", err);
+        setLoading(false);
+      });
   }, [id]);
 
-  if (!post) return <p>Loading post...</p>;
+  const handleAddComment = async (commentData) => {
+    try {
+      const newComment = await addComment(
+        commentData.post_id,
+        commentData.user_id,
+        commentData.content
+      );
+      setPost({
+        ...post,
+        comments: [...(post.comments || []), newComment],
+      });
+    } catch (err) {
+      console.error("Error adding comment:", err);
+    }
+  };
+
+  const handleLike = async () => {
+    try {
+      // placeholder user until auth
+      const userId = 1;
+      const newLike = await addLike(post.id, userId);
+
+      setPost({
+        ...post,
+        likes: [...(post.likes || []), newLike],
+      });
+    } catch (err) {
+      console.error("Error liking post:", err);
+    }
+  };
+
+  if (loading) return <p>Loading post...</p>;
+  if (!post) return <p>Post not found.</p>;
 
   return (
     <div className="post-detail">
       <h2>Post Details</h2>
+
       <div className="post-card">
         <p>{post.content}</p>
         <small>
@@ -27,6 +69,7 @@ function PostDetail() {
 
       <div className="likes">
         <p>Likes: {post.likes?.length || 0}</p>
+        <button onClick={handleLike}>👍 Like</button>
         <ul>
           {post.likes?.map((likeUser) => (
             <li key={likeUser.id}>{likeUser.username}</li>
@@ -36,16 +79,8 @@ function PostDetail() {
 
       <div className="comments">
         <h3>Comments</h3>
-        {post.comments?.length === 0 ? (
-          <p>No comments yet.</p>
-        ) : (
-          post.comments.map((c) => (
-            <div key={c.id} className="comment">
-              <p>{c.content}</p>
-              <small>by User {c.user_id}</small>
-            </div>
-          ))
-        )}
+        <CommentList comments={post.comments || []} />
+        <CommentForm postId={post.id} onAddComment={handleAddComment} />
       </div>
     </div>
   );

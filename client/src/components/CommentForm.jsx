@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 
 function CommentForm({ postId, onAddComment }) {
@@ -9,13 +8,13 @@ function CommentForm({ postId, onAddComment }) {
 
     if (!content.trim()) return;
 
-    const newComment = {
+    // Send only the content — Feed handles API + state update
+    onAddComment({
       content,
-      user_id: 1, // placeholder until auth
       post_id: postId,
-    };
+      user_id: 1, // placeholder until auth
+    });
 
-    onAddComment(newComment); // parent handles API & state update
     setContent(""); // clear input
   };
 

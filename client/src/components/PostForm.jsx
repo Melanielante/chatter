@@ -1,7 +1,6 @@
-
 import React, { useState } from "react";
 
-function PostForm({ onAddPost }) {
+function PostForm({ onSubmit }) {
   const [content, setContent] = useState("");
 
   const handleSubmit = (e) => {
@@ -9,14 +8,8 @@ function PostForm({ onAddPost }) {
 
     if (!content.trim()) return; // prevent empty posts
 
-    const newPost = {
-      content,
-      user_id: 1, // temporary hardcoded until auth is ready
-      group_id: null, 
-    };
-
-    // call parent handler (Feed will handle API call )
-    onAddPost(newPost);
+    // call parent handler (Feed will handle API call)
+    onSubmit(content);
 
     // clear input
     setContent("");

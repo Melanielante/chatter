@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router";
 
+
 function Signup({ setUser }) {
   const [formData, setFormData] = useState({
     username: "",

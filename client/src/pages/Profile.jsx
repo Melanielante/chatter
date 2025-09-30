@@ -1,15 +1,15 @@
-
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams } from "react-router";
+import { fetchUserById } from "../utils/Api";
+import PostList from "../components/PostList";
 
 function Profile() {
-  const { id } = useParams(); 
+  const { id } = useParams();
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch(`http://127.0.0.1:5555/users/${id}`)
-      .then((res) => res.json())
+    fetchUserById(id)
       .then((data) => {
         setUser(data);
         setLoading(false);
@@ -32,14 +32,7 @@ function Profile() {
       <section>
         <h3>Posts</h3>
         {user.posts?.length ? (
-          <ul>
-            {user.posts.map((post) => (
-              <li key={post.id}>
-                <h4>{post.title}</h4>
-                <p>{post.content}</p>
-              </li>
-            ))}
-          </ul>
+          <PostList posts={user.posts} />
         ) : (
           <p>No posts yet.</p>
         )}
