@@ -90,10 +90,11 @@ npm run dev
 
 ##  Deployment on Render
 
-The app is deployed on **Render**:
+The app is deployed on **Render** and **Netlify**:
 
-* **Backend**: Hosted as a web service with auto-deploy from GitHub.
-* **Frontend**: Deployed as a static site connected to the backend API.
+* **Backend**: Hosted as a web service with auto-deploy from GitHub. **https://chatter-bb7s.onrender.com/** 
+
+* **Frontend**: Deployed as a static site connected to the backend API on **https://68dc2032a4bfcf857893f6b8--chattersocial.netlify.app/** */.
 
 ---
 
