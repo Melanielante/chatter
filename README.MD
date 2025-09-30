@@ -1,23 +1,118 @@
-venv) mac@MacdeMacBook-Pro chatter % curl -X POST http://127.0.0.1:5000/auth/signup \
--H "Content-Type: application/json" \
--d '{"username": "newuser", "email": "new@example.com", "password": "secret"}'
 
-{
-  "email": "new@example.com",
-  "id": 6,
-  "username": "newuser"
-}
 
-(venv) mac@MacdeMacBook-Pro chatter % curl -X POST http://127.0.0.1:5000/auth/login \
--H "Content-Type: application/json" \
--d '{"email":"new@example.com","password":"secret"}'
+#  Chatter
 
-{
-  "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTc1ODgyODU2NCwianRpIjoiOTAwYjU1MjUtYTc5Mi00YTg4LWIzMjktMjM4MGQ5MjkzM2EyIiwidHlwZSI6ImFjY2VzcyIsInN1YiI6NiwibmJmIjoxNzU4ODI4NTY0LCJjc3JmIjoiZGI0Y2RhMDktNDFhZi00Y2MyLWI0MjgtMDYzZjdjNzllYWFkIiwiZXhwIjoxNzU4ODI5NDY0fQ.ZfIFNRGsuwRfC4eeKYofv-Cho_XHhbjHEIMHxIbyYgI",
-  "message": "Login successful",
-  "user": {
-    "email": "new@example.com",
-    "id": 6,
-    "username": "newuser"
-  }
-}
+Chatter is a lightweight social media application where users can create accounts, share posts, like and comment on content, and connect with others. It’s built with **React** on the frontend and **Flask** on the backend.
+
+
+
+---
+
+##  Features
+
+* User authentication (Signup & Login)
+* Create, view, and explore posts
+* Like and comment on posts
+* User profile page
+* Responsive design with reusable React components
+
+---
+
+##  Tech Stack
+
+**Frontend:**
+
+* React
+* React Router
+* Fetch API
+
+**Backend:**
+
+* Flask (Python)
+* Flask-RESTful
+* SQLite (development)
+
+**Deployment:**
+
+* Render (Backend & Frontend hosted)
+
+---
+
+##  Project Structure
+
+```plaintext
+chatter/
+│── client/        # React frontend  
+│   ├── src/  
+│   │   ├── pages/        # Core pages (Feed, Profile, Explore, etc.)  
+│   │   ├── components/   # Reusable components (PostForm, PostList, etc.)  
+│   │   ├── utils/        # API calls  
+│   │   └── App.jsx       # Main app entry  
+│  
+│── server/        # Flask backend  
+│   ├── app.py  
+│   ├── models.py  
+│   ├── routes/  
+│   └── migrations/  
+│  
+│── README.md  
+```
+
+---
+
+##  Setup Instructions
+
+### 1 Clone the repository
+
+```bash
+git clone https://github.com/Melanielante/chatter
+cd chatter
+```
+
+### 2 Backend Setup (Flask)
+
+```bash
+cd server
+pip install -r requirements.txt
+flask db upgrade   # Run migrations
+flask run
+```
+
+### 3 Frontend Setup (React)
+
+```bash
+cd client
+npm install
+npm run dev
+```
+
+---
+
+##  Deployment on Render
+
+The app is deployed on **Render**:
+
+* **Backend**: Hosted as a web service with auto-deploy from GitHub.
+* **Frontend**: Deployed as a static site connected to the backend API.
+
+---
+
+##  Future Improvements
+
+* Add real-time updates with WebSockets
+* Implement JWT authentication
+* Improve UI with Tailwind/Material UI
+* Add image uploads
+
+---
+
+##  Contributing
+
+Pull requests are welcome. For major changes, open an issue first to discuss what you’d like to change.
+
+---
+
+##  License
+
+MIT License © 2025 MEL
+
