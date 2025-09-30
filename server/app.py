@@ -17,7 +17,7 @@ app = Flask(__name__)
 # Use DATABASE_URL from Render, fallback to local SQLite
 DATABASE_URL = os.environ.get("DATABASE_URL", "sqlite:///chatter.db")
 
-# Fix Render’s postgres:// → postgresql://
+# Fix Render’s postgres:// - postgresql://
 if DATABASE_URL.startswith("postgres://"):
     DATABASE_URL = DATABASE_URL.replace("postgres://", "postgresql://", 1)
 

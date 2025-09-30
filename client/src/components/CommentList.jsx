@@ -6,7 +6,7 @@ function CommentList({ comments, postId }) {
   useEffect(() => {
     // if no comments passed in, fetch by postId
     if ((!comments || comments.length === 0) && postId) {
-      fetch(`http://127.0.0.1:5000/api/posts/${postId}/comments`)
+      fetch(`${import.meta.env.VITE_API_URL}/posts/${postId}/comments`)
         .then((res) => res.json())
         .then((data) => setFetchedComments(data))
         .catch((err) => console.error("Error fetching comments:", err));
