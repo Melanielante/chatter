@@ -1,0 +1,289 @@
+/* :root {
+  --primary: #1e3a8a;
+  --accent: #2563eb;
+  --light-bg: #f3f4f6;
+  --text-dark: #111827;
+  --hover: #60a5fa;
+}
+
+body {
+  margin: 0;
+  font-family: 'Inter', sans-serif;
+  background: var(--light-bg);
+  color: var(--text-dark);
+} */
+
+.navbar {
+  display: flex;
+  justify-content: space-between;  /* pushes title left, links right */
+  align-items: center;
+  padding: 1rem 2rem;
+  background-color: #1e3a8a; /* bold blue */
+  color: white;
+}
+
+.navbar h1 {
+  margin: 0;
+  font-size: 1.6rem;
+  font-weight: bold;
+}
+
+.nav-links {
+  display: flex;     /* makes them side by side */
+  gap: 2rem;         /* space between links */
+}
+
+.nav-links a {
+  color: white;
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.2s ease;
+}
+
+.nav-links a:hover {
+  color: #60a5fa; /* lighter blue on hover */
+}
+
+/* Feed container */
+.feed {
+  max-width: 700px;
+  margin: 2rem auto;
+  padding: 1rem;
+}
+
+/* Post form */
+.post-form {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 2rem;
+}
+
+.post-form textarea {
+  resize: none;
+  padding: 0.8rem;
+  border-radius: 8px;
+  border: 1px solid #cbd5e1; /* light border */
+  font-size: 1rem;
+  margin-bottom: 0.5rem;
+}
+
+.post-form button {
+  align-self: flex-end;
+  background-color: #1e3a8a; /* bold blue */
+  color: white;
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: background 0.2s ease;
+}
+
+.post-form button:hover {
+  background-color: #2563eb; /* brighter blue */
+}
+
+/* Post list */
+.post-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+}
+
+/* Individual post */
+.post-card {
+  background: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  padding: 1rem 1.2rem;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+  transition: transform 0.2s ease;
+}
+
+.post-card:hover {
+  transform: translateY(-2px);
+}
+
+.post-card h3 {
+  margin: 0 0 0.3rem 0;
+  font-size: 1.1rem;
+  color: #1e3a8a;
+}
+
+.post-card p {
+  margin: 0.5rem 0;
+  font-size: 1rem;
+  color: #334155;
+}
+
+.post-card small {
+  color: #64748b;
+}
+
+.profile {
+  max-width: 700px;
+  margin: 2rem auto;
+  background-color: white;
+  border: 2px solid #1e3a8a; /* bold blue border */
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+/* Heading */
+.profile h2 {
+  color: #1e3a8a; /* bold blue */
+  font-size: 1.8rem;
+  margin-bottom: 1rem;
+  font-weight: bold;
+}
+
+/* General text */
+.profile p {
+  color: #334155; /* dark gray-blue */
+  font-size: 1rem;
+  margin-bottom: 0.5rem;
+}
+
+/* Sections like posts and groups */
+.profile section {
+  margin-top: 1.5rem;
+}
+
+.profile section h3 {
+  color: #2563eb; /* vibrant blue for section titles */
+  margin-bottom: 0.5rem;
+  font-size: 1.2rem;
+  font-weight: 600;
+}
+
+.profile section ul {
+  list-style: none;
+  padding-left: 0;
+}
+
+.profile section li {
+  background-color: #f0f5ff; /* very light blue */
+  margin-bottom: 0.5rem;
+  padding: 0.5rem 0.8rem;
+  border-radius: 8px;
+}
+
+.footer {
+  background-color: #1e3a8a; /* deep bold blue */
+  color: white;
+  text-align: center;
+  padding: 1rem 0;
+  margin-top: 2rem;
+  border-top: 2px solid #2563eb; /* vibrant blue border for pop */
+  font-weight: 500;
+}
+
+/* Optional: hover effect for links if you add any */
+.footer a {
+  color: white;
+  text-decoration: underline;
+}
+
+.footer a:hover {
+  color: #60a5fa; /* lighter blue */
+}
+
+.post-card {
+  background: #f0f8ff;
+  border: 2px solid #1e3a8a;
+  border-radius: 10px;
+  padding: 1rem;
+  margin: 1rem 0;
+  box-shadow: 0 4px 10px rgba(30, 58, 138, 0.3);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.post-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 14px rgba(30, 58, 138, 0.5);
+}
+
+.post-user {
+  color: #1e3a8a;
+  margin-bottom: 0.5rem;
+}
+
+.post-content {
+  font-size: 1.1rem;
+  margin: 0.5rem 0;
+  color: #111827;
+}
+
+.post-group {
+  font-size: 0.85rem;
+  color: #3b82f6;
+}
+
+.post-likes {
+  margin: 0.5rem 0;
+  font-weight: bold;
+  color: #2563eb;
+}
+
+.post-actions {
+  margin: 0.8rem 0;
+  display: flex;
+  gap: 0.5rem;
+}
+
+.post-edit-textarea {
+  width: 100%;
+  padding: 0.5rem;
+  border: 1px solid #3b82f6;
+  border-radius: 6px;
+  margin-bottom: 0.5rem;
+  resize: vertical;
+}
+
+/* Buttons */
+.btn {
+  padding: 0.4rem 0.8rem;
+  border-radius: 6px;
+  border: none;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+/* Specific colors */
+.btn-edit {
+  background: #3b82f6;
+  color: white;
+}
+
+.btn-edit:hover {
+  background: #1e40af;
+}
+
+.btn-save {
+  background: #22c55e;
+  color: white;
+}
+
+.btn-save:hover {
+  background: #15803d;
+}
+
+.btn-delete {
+  background: #ef4444;
+  color: white;
+}
+
+.btn-delete:hover {
+  background: #b91c1c;
+}
+
+.btn-toggle {
+  background: #1e3a8a;
+  color: white;
+}
+
+.btn-toggle:hover {
+  background: #172554;
+}
