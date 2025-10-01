@@ -4,7 +4,7 @@ from flask_jwt_extended import jwt_required, get_jwt_identity
 from models import db, Post, User, Group
 
 class PostResource(Resource):
-    @jwt_required()
+    
     def get(self, post_id=None):
         if post_id:
             post = Post.query.get(post_id)
